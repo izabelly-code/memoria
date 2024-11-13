@@ -13,11 +13,23 @@ data class Word(
 class WordViewModel(context: Context) : ViewModel() {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("flashcards", Context.MODE_PRIVATE)
 
-    val wordBank: MutableList<Word> = loadWords()
+    var wordBank: MutableList<Word> = mutableStateListOf()
+        private set
 
+    init {
+        wordBank.addAll(loadWords())
+    }
     fun addWord(word: String, translation: String) {
         wordBank.add(Word(word = word, translation = translation))
         saveWords()
+    }
+
+    fun removeWord(word: Word) {
+        val wordToRemove = wordBank.find { it.word == word.word && it.translation == word.translation }
+        if (wordToRemove != null) {
+            wordBank.remove(wordToRemove)
+            saveWords()
+        }
     }
 
     private fun saveWords() {

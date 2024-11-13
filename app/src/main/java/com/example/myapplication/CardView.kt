@@ -1,5 +1,8 @@
 package com.example.myapplication
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,10 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,17 +30,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardView(word: String, translation: String, onClick: () -> Unit) {
+fun CardView(word: String, translation: String, onClick: () -> Unit, onDelete: () -> Unit) {
     var turn by remember { mutableStateOf(false) }
 
+    val rotation by animateFloatAsState(
+        targetValue = if (turn) 360f else 0f,
+        animationSpec = tween(durationMillis = 400)
+    )
     Box(modifier = Modifier
-        .requiredSize(width = 170.dp, height = 200.dp)
+        .size(width = 170.dp, height = 200.dp)
+        .graphicsLayer {
+            rotationY = rotation
+            cameraDistance = 12f * density
+        }
         .clip(RoundedCornerShape(16.dp))
         .background(
             Brush.verticalGradient(
@@ -44,7 +58,24 @@ fun CardView(word: String, translation: String, onClick: () -> Unit) {
         )
         .wrapContentSize()
         .clickable { onClick() }
+
     ) {
+        Button(
+            onClick = { onDelete() },
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(bottom = 8.dp),
+            shape = RoundedCornerShape(50),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent ,
+                contentColor = Color.White
+            )
+        ) {
+            Text(
+                text = "X",
+                fontSize = 12.sp
+            )
+        }
         Column (
             modifier = Modifier
                 .fillMaxSize(),
@@ -85,3 +116,4 @@ fun CardView(word: String, translation: String, onClick: () -> Unit) {
         }
     }
 }
+

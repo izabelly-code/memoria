@@ -3,7 +3,6 @@ package com.example.myapplication
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -31,7 +30,6 @@ fun CardDetailView(word: Word) {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        // Background Image
         Image(
             painter = painterResource(id = R.drawable.card_bg),
             contentDescription = null,
@@ -40,7 +38,6 @@ fun CardDetailView(word: Word) {
             contentScale = ContentScale.Crop
         )
 
-        // Centered Text
         Text(
             text = if (turn) word.word else word.translation,
             color = Color.White,
